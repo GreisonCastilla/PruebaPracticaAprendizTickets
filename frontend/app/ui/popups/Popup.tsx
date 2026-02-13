@@ -16,7 +16,7 @@ export default function Popup({ title, isOpen, onClose, Content }: ModalProps){
 
     return(
         <div className="cursor fixed inset-0 flex items-center justify-center bg-black/50">
-            <div className="bg-slate-600 p-6 rounded-xl shadow-lg">
+            <div className="bg-slate-600 p-6 rounded-xl shadow-lg w-2xl">
                 <div className="w-full flex align-middle items-center place-content-between">
                     <span className="text-2xl text-white">
                         {title}
