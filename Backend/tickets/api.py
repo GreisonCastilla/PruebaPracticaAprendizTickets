@@ -10,6 +10,7 @@ from .serializers import MyTokenSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import User
 from rest_framework.permissions import AllowAny
+from django_filters.rest_framework import DjangoFilterBackend
 
 class MyTokenView(TokenObtainPairView):
     serializer_class = MyTokenSerializer
@@ -17,6 +18,8 @@ class MyTokenView(TokenObtainPairView):
 class TicketsViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class =TicketSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['priority', 'state', 'category', 'created_by']
     
     #cambiar el estado del ticket
     @action(detail=True, methods=['post'])

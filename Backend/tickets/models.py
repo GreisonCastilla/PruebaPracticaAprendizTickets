@@ -12,7 +12,7 @@ class User(AbstractUser):
 class Ticket(models.Model):
     
     #Ticket->user
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets')
     #se crear las tuplas para los valores aceptables para estados, prioridad y categoria
     STATES = [(1,'ENVIADO'), (2, 'EN REVISIÓN'), (3, 'CERRADO')]
     PRIORITY = [(1, 'MUY BAJA'),(2, 'BAJA'), (3, 'MODERADA'), (4, 'ALTA'),(5, 'MUY ALTA')]
