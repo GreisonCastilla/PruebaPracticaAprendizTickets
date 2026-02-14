@@ -11,12 +11,15 @@ import TicketPriority from '../tickets/TicketPriority';
 import TicketCategory from '../tickets/TicketCategory';
 import Popup from '../popups/Popup';
 import TicketDetail from '../popups/TicketDetail';
+import { getAllTickets, changeTicketState, changeTicketPriority } from '../../services/tickets';
+import { showToast } from "nextjs-toast-notify";
 
 interface props{
     refreshTrigger?: number;
+    isAdmin?: boolean;
 }
 
-export default function Tickets({refreshTrigger = 0}: props){
+export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
     const [ticketsData, setTicketsData] = useState<any[]>([]);
     const [priority, setPriority] = useState('');
     const [category, setCategory] = useState('');
@@ -26,7 +29,9 @@ export default function Tickets({refreshTrigger = 0}: props){
 
     const fetchData = async () => {
         try {
-            const data = await getTickets(priority, state, category);
+            const data = isAdmin 
+                ? await getAllTickets(priority, state, category)
+                : await getTickets(priority, state, category);
             setTicketsData(data);
         } catch (error) {
             console.error("Error fetching tickets:", error);
@@ -44,6 +49,28 @@ export default function Tickets({refreshTrigger = 0}: props){
     const handleViewDetail = (ticket: any) => {
         setSelectedTicket(ticket);
         setDetailOpen(true);
+    };
+
+    const handleStateChange = async (ticketId: number, newState: string) => {
+        try {
+            await changeTicketState(ticketId, Number(newState));
+            showToast.success("Estado actualizado correctamente", { position: "top-right" });
+            fetchData();
+        } catch (error) {
+            console.error(error);
+            showToast.error("Error al actualizar el estado", { position: "top-right" });
+        }
+    };
+
+    const handlePriorityChange = async (ticketId: number, newPriority: string) => {
+        try {
+            await changeTicketPriority(ticketId, Number(newPriority));
+            showToast.success("Prioridad actualizada correctamente", { position: "top-right" });
+            fetchData();
+        } catch (error) {
+            console.error(error);
+            showToast.error("Error al actualizar la prioridad", { position: "top-right" });
+        }
     };
 
     // Placeholder options - these should ideally come from an API or constant file
@@ -128,10 +155,34 @@ export default function Tickets({refreshTrigger = 0}: props){
                                     <TicketCategory category={ticket.category} />
                                 </Td>
                                 <Td className="p-2 border">
-                                    <TicketPriority priority={ticket.priority} />
+                                    {isAdmin ? (
+                                        <select 
+                                            value={ticket.priority} 
+                                            onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
+                                            className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
+                                        >
+                                            {priorityOptions.filter(o => o.value !== '').map(o => (
+                                                <option key={o.value} value={o.value}>{o.label}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <TicketPriority priority={ticket.priority} />
+                                    )}
                                 </Td>
                                 <Td className="p-2 border flex justify-center">
-                                    <TicketStatus state={ticket.state} />
+                                    {isAdmin ? (
+                                        <select 
+                                            value={ticket.state} 
+                                            onChange={(e) => handleStateChange(ticket.id, e.target.value)}
+                                            className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
+                                        >
+                                            {stateOptions.filter(o => o.value !== '').map(o => (
+                                                <option key={o.value} value={o.value}>{o.label}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <TicketStatus state={ticket.state} />
+                                    )}
                                 </Td>
                                 <Td className="p-2 border">{new Date(ticket.created_at).toLocaleDateString()}</Td>
                                 <Td className="p-2 border">{new Date(ticket.updated_at).toLocaleDateString()}</Td>
@@ -151,7 +202,7 @@ export default function Tickets({refreshTrigger = 0}: props){
                 isOpen={detailOpen}
                 onClose={() => setDetailOpen(false)}
             >
-                {selectedTicket && <TicketDetail ticket={selectedTicket} />}
+                {selectedTicket && <TicketDetail ticket={selectedTicket} onCommentAdded={fetchData} />}
             </Popup>
         </div>
     )

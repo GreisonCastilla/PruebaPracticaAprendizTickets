@@ -63,7 +63,7 @@ export default function Page() {
         <Hero />
       </div>
       {userData && userData.role === "PETITIONER" && <Petitioner user={userData} />}
-      {userData && userData.role === "ADMIN" && <Admin />}
+      {userData && userData.role === "AGENT" && <Admin user={userData} />}
       {!userData && <NotFound />}
       
     </div>

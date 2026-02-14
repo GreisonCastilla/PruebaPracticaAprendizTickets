@@ -1,9 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TicketStatus from '../tickets/TicketStatus';
 import TicketPriority from '../tickets/TicketPriority';
 import TicketCategory from '../tickets/TicketCategory';
+import { createComment } from '../../services/coments';
+import { showToast } from "nextjs-toast-notify";
+
+import { getComments } from '../../services/tickets';
 
 interface Comment {
     id: number;
@@ -14,10 +18,54 @@ interface Comment {
 
 interface Props {
     ticket: any;
+    onCommentAdded?: () => void;
 }
 
-export default function TicketDetail({ ticket }: Props) {
-    const comments = ticket.comentarios || [];
+export default function TicketDetail({ ticket, onCommentAdded }: Props) {
+    const [comments, setComments] = useState<Comment[]>(ticket.comentarios || []);
+    const [loading, setLoading] = useState(false);
+    const [newTitle, setNewTitle] = useState('');
+    const [newDesc, setNewDesc] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const fetchComments = async () => {
+        if (!ticket?.id) return;
+        setLoading(true);
+        try {
+            const data = await getComments(ticket.id);
+            setComments(data);
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!ticket.comentarios || ticket.comentarios.length === 0) {
+            fetchComments();
+        }
+    }, [ticket.id]);
+
+    const handleAddComment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if(!newTitle || !newDesc) return;
+
+        setIsSubmitting(true);
+        try {
+            const data = await createComment(newTitle, newDesc, ticket.id);
+            setComments(prev => [...prev, data]);
+            setNewTitle('');
+            setNewDesc('');
+            showToast.success("Comentario agregado", { position: "top-right" });
+            if(onCommentAdded) onCommentAdded();
+        } catch (error) {
+            console.error(error);
+            showToast.error("Error al agregar comentario", { position: "top-right" });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-6 max-h-[70vh] mt-4 overflow-y-auto pr-2">
@@ -53,7 +101,9 @@ export default function TicketDetail({ ticket }: Props) {
             <div className="flex flex-col gap-4">
                 <span className="text-white font-bold text-xl border-b border-slate-500 pb-2">Comentarios</span>
                 
-                {comments.length > 0 ? (
+                {loading ? (
+                    <span className="text-slate-400 italic">Cargando comentarios...</span>
+                ) : comments.length > 0 ? (
                     <div className="flex flex-col gap-3">
                         {comments.map((comment: Comment) => (
                             <div key={comment.id} className="bg-slate-700 p-3 rounded-lg flex flex-col gap-1 border-l-4 border-blue-500">
@@ -68,6 +118,35 @@ export default function TicketDetail({ ticket }: Props) {
                 ) : (
                     <span className="text-slate-400 italic">No hay comentarios para este ticket.</span>
                 )}
+            </div>
+
+            {/* Add Comment Form */}
+            <div className="flex flex-col gap-4 border-t border-slate-500 pt-4">
+                <span className="text-white font-bold text-lg">Añadir Comentario</span>
+                <form onSubmit={handleAddComment} className="flex flex-col gap-3">
+                    <input 
+                        type="text" 
+                        placeholder="Título del comentario" 
+                        className="bg-slate-700 text-white p-2 rounded border border-slate-500 text-sm"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        required
+                    />
+                    <textarea 
+                        placeholder="Descripción del comentario" 
+                        className="bg-slate-700 text-white p-2 rounded border border-slate-500 text-sm min-h-[80px]"
+                        value={newDesc}
+                        onChange={(e) => setNewDesc(e.target.value)}
+                        required
+                    />
+                    <button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm self-end"
+                    >
+                        {isSubmitting ? "Enviando..." : "Publicar Comentario"}
+                    </button>
+                </form>
             </div>
         </div>
     );

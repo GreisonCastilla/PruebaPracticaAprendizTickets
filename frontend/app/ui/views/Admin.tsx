@@ -1,8 +1,15 @@
-export default function Admin(){
+import Tickets from "./Tickets";
+
+interface props {
+    user?: any;
+}
+
+export default function Admin({ user }: props){
 
     return(
-        <div>
-            Administrador
+        <div className="flex flex-col gap-4 p-10 min-h-screen bg-slate-800">
+            <span className="text-xl text-white font-bold">Panel de Administración - Bienvenido, {user?.username}</span>
+            <Tickets isAdmin={true} />
         </div>
     )
 }

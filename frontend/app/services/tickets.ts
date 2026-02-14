@@ -14,6 +14,21 @@ const getUserId = () => {
   return null;
 };
 
+export async function getAllTickets(priority: string, state: string, category: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/?priority=${priority}&state=${state}&category=${category}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los tickets");
+  }
+
+  return response.json();
+}
+
 export async function getTickets(priority: string, state: string, category: string) {
   const userid = getUserId();
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/?priority=${priority}&state=${state}&category=${category}&created_by=${userid || ''}`, {
