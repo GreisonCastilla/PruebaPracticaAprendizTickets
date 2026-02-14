@@ -21,7 +21,7 @@ export default function Petitioner({user}:props){
     };
 
     return(
-        <div className="flex flex-col gap-4 p-10 h-screen bg-slate-800"  >
+        <div className="flex flex-col gap-4 p-10 min-h-screen bg-slate-800"  >
             <span className="text-xl text-white font-bold">Bienvenido, {user.username}</span>
         
             <div>

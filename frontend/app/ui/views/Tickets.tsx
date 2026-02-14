@@ -6,6 +6,12 @@ import Select from '../Select';
 import Button from '../Button';
 import { IoMdRefresh } from "react-icons/io";
 
+import TicketStatus from '../tickets/TicketStatus';
+import TicketPriority from '../tickets/TicketPriority';
+import TicketCategory from '../tickets/TicketCategory';
+import Popup from '../popups/Popup';
+import TicketDetail from '../popups/TicketDetail';
+
 interface props{
     refreshTrigger?: number;
 }
@@ -15,6 +21,8 @@ export default function Tickets({refreshTrigger = 0}: props){
     const [priority, setPriority] = useState('');
     const [category, setCategory] = useState('');
     const [state, setState] = useState('');
+    const [selectedTicket, setSelectedTicket] = useState<any>(null);
+    const [detailOpen, setDetailOpen] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -31,6 +39,11 @@ export default function Tickets({refreshTrigger = 0}: props){
 
     const handleRefresh = () => {
         fetchData();
+    };
+
+    const handleViewDetail = (ticket: any) => {
+        setSelectedTicket(ticket);
+        setDetailOpen(true);
     };
 
     // Placeholder options - these should ideally come from an API or constant file
@@ -61,7 +74,7 @@ export default function Tickets({refreshTrigger = 0}: props){
     ];
 
     return(
-        <div className="flex flex-col gap-4 border-t-2 border-slate-500 p-4">
+        <div className="flex flex-col gap-4 border-t-2 bg-slate-800 border-slate-500 p-4">
             <span className="text-white font-extralight text-xl">Tickets</span>
 
             <div className="flex gap-4 items-end flex-wrap">
@@ -101,26 +114,28 @@ export default function Tickets({refreshTrigger = 0}: props){
                         <Th className="p-2 border">Categoría</Th>
                         <Th className="p-2 border">Prioridad</Th>
                         <Th className="p-2 border">Estado</Th>
-                        <Th className="p-2 border">Fecha de creación</Th>
-                        <Th className="p-2 border">Fecha de actualización</Th>
-                        <Th className="p-2 border">Acciones</Th>
+                        <Th className="p-2 border">Creación</Th>
+                        <Th className="p-2 border">Actualización</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     {ticketsData && ticketsData.length > 0 ? (
                         ticketsData.map((ticket: any) => (
-                            <Tr key={ticket.id} className="hover:bg-slate-700 border text-white transition-colors">
+                            <Tr onClick={() => handleViewDetail(ticket)} key={ticket.id} className="hover:bg-slate-700 border text-white transition-colors cursor-pointer">
                                 <Td className="p-2 border">{ticket.title}</Td>
                                 <Td className="p-2 border max-w-xs truncate" title={ticket.description}>{ticket.description}</Td>
-                                <Td className="p-2 border">{ticket.category}</Td>
-                                <Td className="p-2 border">{ticket.priority}</Td>
-                                <Td className="p-2 border">{ticket.state}</Td>
+                                <Td className="p-2 border">
+                                    <TicketCategory category={ticket.category} />
+                                </Td>
+                                <Td className="p-2 border">
+                                    <TicketPriority priority={ticket.priority} />
+                                </Td>
+                                <Td className="p-2 border flex justify-center">
+                                    <TicketStatus state={ticket.state} />
+                                </Td>
                                 <Td className="p-2 border">{new Date(ticket.created_at).toLocaleDateString()}</Td>
                                 <Td className="p-2 border">{new Date(ticket.updated_at).toLocaleDateString()}</Td>
-                                <Td className="p-2 border">
-                                    {/* Add actions here later, e.g., Edit/Delete */}
-                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs">Ver</button>
-                                </Td>
+                                
                             </Tr>
                         ))
                     ) : (
@@ -130,6 +145,14 @@ export default function Tickets({refreshTrigger = 0}: props){
                     )}
                 </Tbody>
             </Table>
+
+            <Popup
+                title="Detalle del Ticket"
+                isOpen={detailOpen}
+                onClose={() => setDetailOpen(false)}
+            >
+                {selectedTicket && <TicketDetail ticket={selectedTicket} />}
+            </Popup>
         </div>
     )
 }

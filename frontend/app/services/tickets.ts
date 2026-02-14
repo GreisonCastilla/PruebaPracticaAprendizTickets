@@ -57,3 +57,50 @@ export async function createTicket(formData: any) {
 
   return response.json();
 }
+
+export async function getComments(ticketId: number) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/comentarios/?ticket=${ticketId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los comentarios");
+  }
+
+  return response.json();
+}
+
+export async function changeTicketState(ticketId: number, state: number) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/${ticketId}/changeState/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ state }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al cambiar el estado del ticket");
+  }
+
+  return response.json();
+}
+
+export async function changeTicketPriority(ticketId: number, priority: number) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/${ticketId}/changePriority/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ priority }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al cambiar la prioridad del ticket");
+  }
+
+  return response.json();
+}
