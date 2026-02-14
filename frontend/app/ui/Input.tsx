@@ -13,7 +13,7 @@ export default function Input({name, description, type="text", value, onChange}:
           <label htmlFor={name} className="text-white font-extralight">{description}</label>
           <input onChange={(e) => onChange(e.target.value)} id={name} name={name} 
           type={type} value={value} placeholder={description}
-          className="bg-white rounded outline-none p-1" />
+          className="bg-white rounded outline-none p-1 text-slate-600" />
         </div>
 
     )

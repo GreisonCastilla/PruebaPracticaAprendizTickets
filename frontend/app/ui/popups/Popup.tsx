@@ -7,10 +7,10 @@ interface props {
   title:String
   isOpen: boolean;
   onClose: () => void;
-  Content?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-export default function Popup({ title, isOpen, onClose, Content }: props){
+export default function Popup({ title, isOpen, onClose, children }: props){
     
     if (!isOpen) return null;
 
@@ -25,7 +25,7 @@ export default function Popup({ title, isOpen, onClose, Content }: props){
                     <IoMdClose onClick={onClose} className="h-5 w-5 fill-white cursor-pointer"/>
                 </div>
 
-                {Content && <Content/>}
+                {children}
 
             </div>
         </div>

@@ -60,7 +60,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="p-2 flex min-h-screen items-center justify-center bg-slate-800 font-sans dark:bg-black">
+    <div className="p-2 flex min-h-screen items-center justify-center bg-slate-800 font-sans">
       <main className=" flex flex-col w-2xl bg-slate-600 items-center justify-center gap-4 p-5 md:p-10 rounded-2xl">
         <Logo />
 

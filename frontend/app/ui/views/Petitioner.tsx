@@ -4,6 +4,7 @@ import { HiOutlinePlus } from "react-icons/hi";
 import Popup from "../popups/Popup";   
 import { useState } from "react";
 import AddTicket from "../popups/AddTicket";
+import Tickets from "../views/Tickets";
 
 interface props{
     user:any
@@ -11,7 +12,13 @@ interface props{
 
 
 export default function Petitioner({user}:props){
-const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    const handleTicketCreated = () => {
+        setRefreshTrigger(prev => prev + 1);
+        setOpen(false);
+    };
 
     return(
         <div className="flex flex-col gap-4 p-10 h-screen bg-slate-800"  >
@@ -23,11 +30,11 @@ const [open, setOpen] = useState(false);
             <Popup
                 title="Agregar ticket"
                 isOpen={open}
-                Content={AddTicket}
                 onClose={() => setOpen(false)}
-            />
+            >
+                <AddTicket onTicketCreated={handleTicketCreated}/>
+            </Popup>
+            <Tickets refreshTrigger={refreshTrigger}/>
         </div>
-
-        
     )
 }

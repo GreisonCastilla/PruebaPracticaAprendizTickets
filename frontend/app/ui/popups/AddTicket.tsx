@@ -7,7 +7,11 @@ import { useState } from "react";
 import { showToast } from "nextjs-toast-notify";
 import { createTicket } from "../../services/tickets";
 
-export default function AddTicket(){
+interface props {
+    onTicketCreated?: () => void;
+}
+
+export default function AddTicket({onTicketCreated}:props){
 
     const PRIORITY = [{value:1,label: 'MUY BAJA'},{value:2,label: 'BAJA'}, {value:3,label: 'MODERADA'}, {value:4,label: 'ALTA'},{value:5,label: 'MUY ALTA'}]
     const CATEGORIAS = [{value:1,label: 'SOPORTE'}, {value:2,label: 'FACTURACION'}, {value:3,label: 'VENTAS'}, {value:4,label: 'RECLAMOS'}, {value:5,label: 'CONSULTAS'}, {value:6,label: 'TECNICO'}]
@@ -23,7 +27,7 @@ export default function AddTicket(){
         try {
             const data = await createTicket(formData);
             console.log(data);
-            showToast.success("Ticket agregado correctamente" + data, {
+            showToast.success("Ticket agregado correctamente", {
                 duration: 4000,
                 progress: false,
                 position: "top-right",
@@ -37,7 +41,8 @@ export default function AddTicket(){
                 description: "",
                 category: "",
                 priority: ""
-            });            
+            });
+            if(onTicketCreated) onTicketCreated();
         } catch (error) {
             console.error(error);
             showToast.error("Se produjo un error al agregar el ticket", {
