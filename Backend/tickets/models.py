@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     ROLE=(('AGENT', 'AGENTE'), ('PETITIONER', 'SOLICITANTE'))
     
-    role = models.CharField(max_length=20, choices=ROLE)
+    role = models.CharField(max_length=20, choices=ROLE, default='PETITIONER')
 
 #clase ticket
 class Ticket(models.Model):
