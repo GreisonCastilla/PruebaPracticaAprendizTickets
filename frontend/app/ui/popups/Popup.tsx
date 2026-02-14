@@ -3,14 +3,14 @@
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
-interface ModalProps {
+interface props {
   title:String
   isOpen: boolean;
   onClose: () => void;
   Content?: React.ReactNode;
 }
 
-export default function Popup({ title, isOpen, onClose, Content }: ModalProps){
+export default function Popup({ title, isOpen, onClose, Content }: props){
     
     if (!isOpen) return null;
 

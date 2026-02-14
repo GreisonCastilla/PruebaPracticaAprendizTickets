@@ -11,7 +11,7 @@ export default function Logo(){
     return(
         <div onClick={handleClick} className="cursor-pointer  flex gap-2 justify-center items-center   ">
             <FaTicket className="fill-white h-10 w-10"/>
-            <h1 className="font-bold text-white">Ticket app</h1>
+            <h1 className="font-bold md:text-2xl text-white">Ticket app</h1>
         </div>
     )
 }
