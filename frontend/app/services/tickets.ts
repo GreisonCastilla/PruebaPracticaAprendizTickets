@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import { getAuthHeaders } from "./auth";
 
 const getUserId = () => {
   if (typeof window !== "undefined") {
@@ -17,9 +18,7 @@ const getUserId = () => {
 export async function getAllTickets(priority: string, state: string, category: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/?priority=${priority}&state=${state}&category=${category}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -33,9 +32,7 @@ export async function getTickets(priority: string, state: string, category: stri
   const userid = getUserId();
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/?priority=${priority}&state=${state}&category=${category}&created_by=${userid || ''}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -54,9 +51,7 @@ export async function createTicket(formData: any) {
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       title: formData.title,
       description: formData.description,
@@ -76,9 +71,7 @@ export async function createTicket(formData: any) {
 export async function getComments(ticketId: number) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/comentarios/?ticket=${ticketId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -91,9 +84,7 @@ export async function getComments(ticketId: number) {
 export async function changeTicketState(ticketId: number, state: number) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/${ticketId}/changeState/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({ state }),
   });
 
@@ -107,9 +98,7 @@ export async function changeTicketState(ticketId: number, state: number) {
 export async function changeTicketPriority(ticketId: number, priority: number) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/tickets/${ticketId}/changePriority/`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({ priority }),
   });
 

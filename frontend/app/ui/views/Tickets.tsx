@@ -175,6 +175,7 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
                                         <select 
                                             value={ticket.priority} 
                                             onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
                                             className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
                                         >
                                             {priorityOptions.filter(o => o.value !== '').map(o => (
@@ -190,6 +191,7 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
                                         <select 
                                             value={ticket.state} 
                                             onChange={(e) => handleStateChange(ticket.id, e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
                                             className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
                                         >
                                             {stateOptions.filter(o => o.value !== '').map(o => (

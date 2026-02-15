@@ -1,9 +1,9 @@
+import { getAuthHeaders } from "./auth";
+
 export async function createComment(title: string, description: string, ticketId: number) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/comentarios/`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
             title,
             description,

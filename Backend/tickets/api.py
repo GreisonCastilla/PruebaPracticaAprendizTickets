@@ -42,6 +42,8 @@ class TicketsViewSet(viewsets.ModelViewSet):
 class ComentarioViewSet(viewsets.ModelViewSet):
     queryset = Comentario.objects.all()
     serializer_class = ComentarioSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['ticket']
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

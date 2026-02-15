@@ -11,7 +11,8 @@ export default function Select({name,description,options,onChange, value}:props)
         <div className="flex flex-col gap-2">
             <label htmlFor={name} className="text-white">{description}</label>
             <select name={name} id={name} value={value} onChange={(e) => onChange(e.target.value)}
-                className="p-2 rounded-md bg-white text-slate-800 outline-none
+                onClick={(e) => e.stopPropagation()}
+                className="p-2 rounded-md bg-white text-slate-800 outline-none cursor-pointer
                 transition-all duration-300 ease-in-out hover:bg-slate-200 hover:text-slate-800">
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
