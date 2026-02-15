@@ -7,7 +7,7 @@ import TicketCategory from '../tickets/TicketCategory';
 import { createComment } from '../../services/coments';
 import { showToast } from "nextjs-toast-notify";
 
-import { getComments } from '../../services/tickets';
+import { changeTicketState, changeTicketPriority, getComments } from '../../services/tickets';
 
 interface Comment {
     id: number;
@@ -18,15 +18,18 @@ interface Comment {
 
 interface Props {
     ticket: any;
+    isAdmin?: boolean;
     onCommentAdded?: () => void;
 }
 
-export default function TicketDetail({ ticket, onCommentAdded }: Props) {
+export default function TicketDetail({ ticket, isAdmin = false, onCommentAdded }: Props) {
     const [comments, setComments] = useState<Comment[]>(ticket.comentarios || []);
     const [loading, setLoading] = useState(false);
     const [newTitle, setNewTitle] = useState('');
     const [newDesc, setNewDesc] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [currentState, setCurrentState] = useState(ticket.state);
+    const [currentPriority, setCurrentPriority] = useState(ticket.priority);
 
     const fetchComments = async () => {
         if (!ticket?.id) return;
@@ -42,10 +45,36 @@ export default function TicketDetail({ ticket, onCommentAdded }: Props) {
     };
 
     useEffect(() => {
+        setCurrentState(ticket.state);
+        setCurrentPriority(ticket.priority);
         if (!ticket.comentarios || ticket.comentarios.length === 0) {
             fetchComments();
         }
-    }, [ticket.id]);
+    }, [ticket.id, ticket.state, ticket.priority]);
+
+    const handleStateChange = async (newState: string) => {
+        try {
+            await changeTicketState(ticket.id, Number(newState));
+            setCurrentState(Number(newState));
+            showToast.success("Estado actualizado", { position: "top-right" });
+            if(onCommentAdded) onCommentAdded();
+        } catch (error) {
+            console.error(error);
+            showToast.error("Error al actualizar estado", { position: "top-right" });
+        }
+    };
+
+    const handlePriorityChange = async (newPriority: string) => {
+        try {
+            await changeTicketPriority(ticket.id, Number(newPriority));
+            setCurrentPriority(Number(newPriority));
+            showToast.success("Prioridad actualizada", { position: "top-right" });
+            if(onCommentAdded) onCommentAdded();
+        } catch (error) {
+            console.error(error);
+            showToast.error("Error al actualizar prioridad", { position: "top-right" });
+        }
+    };
 
     const handleAddComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,6 +96,20 @@ export default function TicketDetail({ ticket, onCommentAdded }: Props) {
         }
     };
 
+    const priorityOptions = [
+        { value: '1', label: 'Muy Baja' },
+        { value: '2', label: 'Baja' },
+        { value: '3', label: 'Moderada' },
+        { value: '4', label: 'Alta' },
+        { value: '5', label: 'Muy Alta' }
+    ];
+
+    const stateOptions = [
+        { value: '1', label: 'Enviado' },
+        { value: '2', label: 'En Revisión' },
+        { value: '3', label: 'Cerrado' }
+    ];
+
     return (
         <div className="flex flex-col gap-6 max-h-[70vh] mt-4 overflow-y-auto pr-2">
             {/* Ticket Info Section */}
@@ -77,7 +120,19 @@ export default function TicketDetail({ ticket, onCommentAdded }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-slate-400 text-xs uppercase font-bold">Estado</span>
-                    <TicketStatus state={ticket.state} />
+                    {isAdmin ? (
+                        <select 
+                            value={currentState} 
+                            onChange={(e) => handleStateChange(e.target.value)}
+                            className="bg-slate-700 text-white p-2 rounded border border-slate-500 text-sm"
+                        >
+                            {stateOptions.map(o => (
+                                <option key={o.value} value={o.value}>{o.label}</option>
+                            ))}
+                        </select>
+                    ) : (
+                        <TicketStatus state={currentState} />
+                    )}
                 </div>
                 <div className="flex flex-col gap-1 md:col-span-2">
                     <span className="text-slate-400 text-xs uppercase font-bold">Descripción</span>
@@ -89,7 +144,19 @@ export default function TicketDetail({ ticket, onCommentAdded }: Props) {
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-slate-400 text-xs uppercase font-bold">Prioridad</span>
-                    <TicketPriority priority={ticket.priority} />
+                    {isAdmin ? (
+                        <select 
+                            value={currentPriority} 
+                            onChange={(e) => handlePriorityChange(e.target.value)}
+                            className="bg-slate-700 text-white p-2 rounded border border-slate-500 text-sm"
+                        >
+                            {priorityOptions.map(o => (
+                                <option key={o.value} value={o.value}>{o.label}</option>
+                            ))}
+                        </select>
+                    ) : (
+                        <TicketPriority priority={currentPriority} />
+                    )}
                 </div>
                 <div className="flex flex-col gap-1 text-xs text-slate-400">
                     <span>Creado: {new Date(ticket.created_at).toLocaleString()}</span>

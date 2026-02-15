@@ -100,6 +100,18 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
         { value: '3', label: 'Cerrado' }
     ];
 
+    const getRowColor = (p: number) => {
+        if (!isAdmin) return 'hover:bg-slate-700';
+        switch (Number(p)) {
+            case 1: return 'bg-green-900/20 hover:bg-green-900/40 text-green-100';
+            case 2: return 'bg-emerald-900/20 hover:bg-emerald-900/40 text-emerald-100';
+            case 3: return 'bg-yellow-900/20 hover:bg-yellow-900/40 text-yellow-100';
+            case 4: return 'bg-orange-900/20 hover:bg-orange-900/40 text-orange-100';
+            case 5: return 'bg-red-900/20 hover:bg-red-900/40 text-red-100';
+            default: return 'hover:bg-slate-700';
+        }
+    };
+
     return(
         <div className="flex flex-col gap-4 border-t-2 bg-slate-800 border-slate-500 p-4">
             <span className="text-white font-extralight text-xl">Tickets</span>
@@ -135,20 +147,24 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
 
             <Table>
                 <Thead>
-                    <Tr className="bg-slate-500 text-white">
-                        <Th className="p-2 border">Titulo</Th>
-                        <Th className="p-2 border">Descripción</Th>
-                        <Th className="p-2 border">Categoría</Th>
-                        <Th className="p-2 border">Prioridad</Th>
-                        <Th className="p-2 border">Estado</Th>
-                        <Th className="p-2 border">Creación</Th>
-                        <Th className="p-2 border">Actualización</Th>
+                    <Tr className="bg-slate-900 text-white font-bold">
+                        <Th className="p-2 border border-white">Titulo</Th>
+                        <Th className="p-2 border border-white">Descripción</Th>
+                        <Th className="p-2 border border-white">Categoría</Th>
+                        <Th className="p-2 border border-white">Prioridad</Th>
+                        <Th className="p-2 border border-white">Estado</Th>
+                        <Th className="p-2 border border-white">Creación</Th>
+                        <Th className="p-2 border border-white">Actualización</Th>
                     </Tr>
                 </Thead>
-                <Tbody>
+                <Tbody className="text-white">
                     {ticketsData && ticketsData.length > 0 ? (
                         ticketsData.map((ticket: any) => (
-                            <Tr onClick={() => handleViewDetail(ticket)} key={ticket.id} className="hover:bg-slate-700 border text-white transition-colors cursor-pointer">
+                            <Tr 
+                                onClick={() => handleViewDetail(ticket)} 
+                                key={ticket.id} 
+                                className={`border-b border-slate-700 transition-colors cursor-pointer ${getRowColor(ticket.priority)}`}
+                            >
                                 <Td className="p-2 border">{ticket.title}</Td>
                                 <Td className="p-2 border max-w-xs truncate" title={ticket.description}>{ticket.description}</Td>
                                 <Td className="p-2 border">
@@ -202,7 +218,13 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
                 isOpen={detailOpen}
                 onClose={() => setDetailOpen(false)}
             >
-                {selectedTicket && <TicketDetail ticket={selectedTicket} onCommentAdded={fetchData} />}
+                {selectedTicket && (
+                    <TicketDetail 
+                        ticket={selectedTicket} 
+                        isAdmin={isAdmin} 
+                        onCommentAdded={fetchData} 
+                    />
+                )}
             </Popup>
         </div>
     )
