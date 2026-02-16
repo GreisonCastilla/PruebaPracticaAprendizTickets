@@ -58,12 +58,12 @@ $ python backend/manage.py test tickets -v 2
 ```
 ## usuario de prueba
 **usuario agente**
-user: admin
+user: admin  
 password: admin
 
 **Usuario Solicitante**
-user: user
-password: PASSWORD
+user: user  
+password: password
 
 en caso de que no exista un usuario se puede crear uno desde la interfaz de usuario.
 y para admin se debe crear desde la api accediendo a http://localhost:8000/api/users/ y crear un usuario con el rol de admin. y luego iniciar sesion con el usuario creado.
