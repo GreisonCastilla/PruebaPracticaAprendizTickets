@@ -57,11 +57,13 @@ si se desea ver el resultado de cada test se debe ejecutar el siguiente comando 
 $ python backend/manage.py test tickets -v 2
 ```
 ## usuario de prueba
-**usuario agente**
+**usuario agente**  
+
 user: admin  
 password: admin
 
-**Usuario Solicitante**
+**Usuario Solicitante**  
+
 user: user  
 password: password
 
