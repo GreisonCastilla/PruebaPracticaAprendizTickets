@@ -145,75 +145,76 @@ export default function Tickets({refreshTrigger = 0, isAdmin = false}: props){
                 />
             </div>
 
-            <Table>
-                <Thead>
-                    <Tr className="bg-slate-900 text-white font-bold">
-                        <Th className="p-2 border border-white">Titulo</Th>
-                        <Th className="p-2 border border-white">Descripción</Th>
-                        <Th className="p-2 border border-white">Categoría</Th>
-                        <Th className="p-2 border border-white">Prioridad</Th>
-                        <Th className="p-2 border border-white">Estado</Th>
-                        <Th className="p-2 border border-white">Creación</Th>
-                        <Th className="p-2 border border-white">Actualización</Th>
-                    </Tr>
-                </Thead>
-                <Tbody className="text-white">
-                    {ticketsData && ticketsData.length > 0 ? (
-                        ticketsData.map((ticket: any) => (
-                            <Tr 
-                                onClick={() => handleViewDetail(ticket)} 
-                                key={ticket.id} 
-                                className={`border-b border-slate-700 transition-colors cursor-pointer ${getRowColor(ticket.priority)}`}
-                            >
-                                <Td className="p-2 border">{ticket.title}</Td>
-                                <Td className="p-2 border max-w-xs truncate" title={ticket.description}>{ticket.description}</Td>
-                                <Td className="p-2 border">
-                                    <TicketCategory category={ticket.category} />
-                                </Td>
-                                <Td className="p-2 border">
-                                    {isAdmin ? (
-                                        <select 
-                                            value={ticket.priority} 
-                                            onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
-                                        >
-                                            {priorityOptions.filter(o => o.value !== '').map(o => (
-                                                <option key={o.value} value={o.value}>{o.label}</option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        <TicketPriority priority={ticket.priority} />
-                                    )}
-                                </Td>
-                                <Td className="p-2 border flex justify-center">
-                                    {isAdmin ? (
-                                        <select 
-                                            value={ticket.state} 
-                                            onChange={(e) => handleStateChange(ticket.id, e.target.value)}
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
-                                        >
-                                            {stateOptions.filter(o => o.value !== '').map(o => (
-                                                <option key={o.value} value={o.value}>{o.label}</option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        <TicketStatus state={ticket.state} />
-                                    )}
-                                </Td>
-                                <Td className="p-2 border">{new Date(ticket.created_at).toLocaleDateString()}</Td>
-                                <Td className="p-2 border">{new Date(ticket.updated_at).toLocaleDateString()}</Td>
-                                
-                            </Tr>
-                        ))
-                    ) : (
-                        <Tr>
-                            <Td colSpan={8} className="p-4 text-center text-white">No se encontraron tickets.</Td>
+            <div className="overflow-x-auto">
+                <Table className="w-full">
+                    <Thead>
+                        <Tr className="bg-slate-900 text-white font-bold">
+                            <Th className="p-2 border border-white">Titulo</Th>
+                            <Th className="p-2 border border-white">Descripción</Th>
+                            <Th className="p-2 border border-white">Categoría</Th>
+                            <Th className="p-2 border border-white">Prioridad</Th>
+                            <Th className="p-2 border border-white">Estado</Th>
+                            <Th className="p-2 border border-white">Creación</Th>
+                            <Th className="p-2 border border-white">Actualización</Th>
                         </Tr>
-                    )}
-                </Tbody>
-            </Table>
+                    </Thead>
+                    <Tbody className="text-white">
+                        {ticketsData && ticketsData.length > 0 ? (
+                            ticketsData.map((ticket: any) => (
+                                <Tr 
+                                    onClick={() => handleViewDetail(ticket)} 
+                                    key={ticket.id} 
+                                    className={`border-b border-slate-700 transition-colors cursor-pointer ${getRowColor(ticket.priority)}`}
+                                >
+                                    <Td className="p-2 border">{ticket.title}</Td>
+                                    <Td className="p-2 border max-w-xs truncate" title={ticket.description}>{ticket.description}</Td>
+                                    <Td className="p-2 border">
+                                        <TicketCategory category={ticket.category} />
+                                    </Td>
+                                    <Td className="p-2 border">
+                                        {isAdmin ? (
+                                            <select 
+                                                value={ticket.priority} 
+                                                onChange={(e) => handlePriorityChange(ticket.id, e.target.value)}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
+                                            >
+                                                {priorityOptions.filter(o => o.value !== '').map(o => (
+                                                    <option key={o.value} value={o.value}>{o.label}</option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <TicketPriority priority={ticket.priority} />
+                                        )}
+                                    </Td>
+                                    <Td className="p-2 border flex justify-center">
+                                        {isAdmin ? (
+                                            <select 
+                                                value={ticket.state} 
+                                                onChange={(e) => handleStateChange(ticket.id, e.target.value)}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="bg-slate-700 text-white p-1 rounded border border-slate-500 text-xs w-full"
+                                            >
+                                                {stateOptions.filter(o => o.value !== '').map(o => (
+                                                    <option key={o.value} value={o.value}>{o.label}</option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <TicketStatus state={ticket.state} />
+                                        )}
+                                    </Td>
+                                    <Td className="p-2 border">{new Date(ticket.created_at).toLocaleDateString()}</Td>
+                                    <Td className="p-2 border">{new Date(ticket.updated_at).toLocaleDateString()}</Td>
+                                </Tr>
+                            ))
+                        ) : (
+                            <Tr>
+                                <Td colSpan={8} className="p-4 text-center text-white">No se encontraron tickets.</Td>
+                            </Tr>
+                        )}
+                    </Tbody>
+                </Table>
+            </div>
 
             <Popup
                 title="Detalle del Ticket"
