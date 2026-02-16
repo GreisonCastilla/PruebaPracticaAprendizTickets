@@ -1,0 +1,12 @@
+--- Starting Super Reset ---
+SUCCESS: Database deleted.
+SUCCESS: Django setup completed.
+Running migrations...
+SUCCESS: Migrations applied.
+Seeding data...
+SUCCESS: Created admin user: admin
+SUCCESS: Created petitioner user: user
+SUCCESS: Created ticket: No puedo acceder al sistema
+SUCCESS: Created ticket: Error en la factura de febrero
+SUCCESS: Created ticket: Solicitud de nuevo equipo
+--- Finished Seeding Successfully ---

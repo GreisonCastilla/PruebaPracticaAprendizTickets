@@ -69,3 +69,13 @@ password: password
 
 en caso de que no exista un usuario se puede crear uno desde la interfaz de usuario.
 y para admin se debe crear desde la api accediendo a http://localhost:8000/api/users/ y crear un usuario con el rol de admin. y luego iniciar sesion con el usuario creado.
+
+# seed
+Asi mismo puede realizar un reset de la base de datos ejecutando el siguiente comando en la capeta principal del backend con la maquina viertual encendida.
+```bash
+//sin docker
+$ python super_reset.py
+//con docker
+$ docker exec -it backend python super_reset.py
+```
+este commando eliminará la base de datos y la creara de nuevo con los datos de seed (3 tickets, 1 usuario admin y 1 usuario solicitante (con las mismas credenciales que se mencionan arriba)).
