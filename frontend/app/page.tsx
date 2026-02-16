@@ -37,7 +37,7 @@ export default function Home() {
 
       setPassword("");
       setUsername("");
-      router.push("/tickets");
+      router.push("/Tickets");
     } catch (error) {
       console.error(error);
       showToast.error("Se produjo un error al Iniciar sesión", {
@@ -55,7 +55,7 @@ export default function Home() {
     const token = localStorage.getItem("access");
 
     if (token) {
-      router.push("/tickets"); // redirige si ya está logueado
+      router.push("/Tickets"); // redirige si ya está logueado
     }
   }, []);
 
