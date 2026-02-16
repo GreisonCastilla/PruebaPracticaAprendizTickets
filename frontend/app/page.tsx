@@ -92,9 +92,10 @@ export default function Home() {
         <Popup
           title="Registrar"
           isOpen={open}
-          Content={Register}
           onClose={() => setOpen(false)}
-        />
+        >
+          <Register />
+        </Popup>
       </main>
     </div>
   );

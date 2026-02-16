@@ -3,7 +3,7 @@ import React from "react";
 type props = {
     onClick?: () => void;
     action:string;
-    Icon:React.ComponentType;
+    Icon:React.ComponentType<{ className?: string }>;
 }
 
 export default function Button({onClick, action, Icon}:props){
